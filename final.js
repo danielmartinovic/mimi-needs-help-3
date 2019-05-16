@@ -1,29 +1,31 @@
-var canvas = document.getElementById("myCanvas");
-var ctx = canvas.getContext("2d");
+function setUpCanvas(){
+	canvas = document.getElementById("canvas");
+	ctx = canvas.getContext("2d");
+	x = canvas.width/2;
+	y = canvas.height-80;
+}
 
-var x = canvas.width/2;
-var y = canvas.height-80;
 var paddleHeight=10;
 var paddleWidth=75;
 var paddleX=(canvas.width-paddleWidth)/2;
-var rightPressed=false;  // Whether right control button is pressed
-var leftPressed=false;  // Whether left control button is pressed
+
+var rightPressed=false;
+var leftPressed=false;
+
 var ballRadius=12;
 var brickRowCount=13;
 var brickColumnCount=6;
-
 var count = brickRowCount*brickColumnCount;
 var rem = count;
 
 var score = 0;
-var lives = 10;  // How many lives player has to complete the game
+var lives = 10;
 
 var brickWidth=70;
 var brickHeight=20;
 var brickPadding=5;
 var brickOffsetTop=30;
 var brickOffsetLeft=25;
-var speedup1=0;
 
 var bricks=[];
 for(c=0;c<brickColumnCount;++c){
@@ -31,7 +33,6 @@ for(c=0;c<brickColumnCount;++c){
   for(r=0;r<brickRowCount;++r){
     bricks[c][r]={x:0,y:0,status:1};
   }
-
 }
 
 var dx=5;
@@ -43,7 +44,6 @@ function drawBall(){
   ctx.arc(x,y,ballRadius,0,Math.PI*2);
   ctx.fillStyle="#fff";
   ctx.fillStroke="#fff";
-  ctx.stroke="10";
   ctx.fill();
   ctx.closePath();
 }
@@ -68,10 +68,7 @@ function drawBricks(){
          bricks[c][r].y=brickY;
          ctx.beginPath();
          ctx.rect(brickX,brickY,brickWidth,brickHeight);
-         if(c%2!=0)
-           ctx.fillStyle="#fff";
-         else
-           ctx.fillStyle="#fff";
+         ctx.fillStyle="#fff";
          ctx.fill();
          ctx.closePath();
       }
@@ -79,27 +76,20 @@ function drawBricks(){
   }
 }
 function collisionDetection(){
+
   for(c=0;c<brickColumnCount;++c){
     for(r=0;r<brickRowCount;++r){
        var b=bricks[c][r];
        if(b.status==1){
-
           if(x>b.x && x<b.x+brickWidth && y>b.y && y<b.y+brickHeight){
              dy=-dy;
              b.status=0;
              score++;
              count--;
-             /*** Change color of ball when it hits a brick ****/
-             ctx.beginPath();
-             ctx.arc(x,y,ballRadius,0,Math.PI*2);
-             ctx.fillStyle="#00ffff";
-             ctx.fillStroke="#00ffff";
-             ctx.stroke="10";
              ctx.fill();
              ctx.closePath();
                   if(count<=0){
                      alert("Winner Winner Chicken Dinner!");
-                     document.location.reload();
                   }
           }
       }
@@ -111,13 +101,18 @@ function drawScore(){
 
    ctx.fillStyle="#37F5FC";
    ctx.fillText("SCORE "+score,40,20);
-//   console.log(parseInt(brickRowCount)*parseInt(brickColumnCount)-parseInt(count));
+}
+
+function drawTitle() {
+
+    ctx.fillStyle = "#37F5FC";
+    ctx.fillText("Final Game" , 220, 20);
 }
 
 function drawLives() {
 
     ctx.fillStyle = "#37F5FC";
-    ctx.fillText("         Final Game                                             LIVES "+lives, canvas.width-310, 20);
+    ctx.fillText("LIVES "+lives, 410, 20);
 }
 
 function draw(){
@@ -127,6 +122,7 @@ function draw(){
     drawBall();
     drawPaddle();
     drawScore();
+		drawTitle();
     drawLives();
     collisionDetection();
 
@@ -140,7 +136,6 @@ function draw(){
           lives--;
           if(!lives) {
             alert("Sorry no chicken dinner for you ;(");
-            document.location.reload();
           }
           else{
             x=canvas.width/2;
@@ -177,12 +172,9 @@ function keyUpHandler(e){
     rightPressed=false;
    if(e.keyCode==37)
      leftPressed=false;
-
 }
 
 document.addEventListener("keydown",keyDownHandler,false);
 document.addEventListener("keyup",keyUpHandler,false);
 
 setInterval(draw,20);
-
-
