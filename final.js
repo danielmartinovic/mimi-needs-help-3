@@ -169,7 +169,7 @@ function collisionDetection(){
                     if(dx<0)
                       dx-=1;
                     else
-                      dx+=1;
+                      dx+=1; 
                      paddleWidth+=5;
                      speedup4=1;
 
